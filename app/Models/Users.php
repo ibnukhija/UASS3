@@ -2,27 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Users extends Model
+class Users extends Authenticatable
 {
-    use HasFactory;
-
+    use Notifiable;
     protected $table = 'user';
     protected $primaryKey = 'user_id';
-
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
-        'nama',
-        'username',
-        'password',
+        'nama', 
+        'username', 
+        'password'
     ];
 
-    protected $hidden = ['password'];
-
-    public function transaksi()
-    {
-        return $this->hasMany(Transaksi::class, 'user_id');
-    }
+    public $timestamps = true;
 }
-
