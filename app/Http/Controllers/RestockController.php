@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\RestockItem;
-use App\Models\DetailRestockItem;
+use App\Models\DetailRestockItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,7 +42,7 @@ class RestockController extends Controller
 
             //Simpan Detail & Update Stok Barang
             foreach($request->items as $itemData) {
-                DetailRestockItem::create([
+                DetailRestockItems::create([
                     'restock_id' => $restock->restock_id,
                     'item_id' => $itemData['item_id'],
                     'jumlah' => $itemData['jumlah'],
