@@ -24,7 +24,11 @@
             <i class="fa-solid fa-filter"></i> Filter
         </button>
         <button type="button" onclick="window.print()" class="bg-gray-600 text-white px-4 py-2 rounded font-bold hover:bg-gray-700">
-            <i class="fa-solid fa-print"></i> Cetak
+            <a href="{{ route('laporan.cetak', ['start_date' => $startDate, 'end_date' => $endDate, 'jenis' => $jenis]) }}" 
+                target="_blank" 
+                class="bg-gray-800 text-white px-4 py-2 rounded font-bold hover:bg-gray-900 flex items-center gap-2">
+                <i class="fa-solid fa-print"></i> Cetak PDF
+            </a>
         </button>
     </form>
 

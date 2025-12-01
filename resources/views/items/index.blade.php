@@ -3,10 +3,11 @@
 @section('content')
 <div class="bg-white p-6 rounded shadow-lg border-t-4 border-gray-800">
     <div class="flex justify-between items-center mb-6">
-        <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-gray-700 border border-gray-500 hover:border-gray-700 px-4 py-2 rounded">Kembali</a>
+        <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 px-1 py-2 rounded">Kembali</a>
     </div>
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold uppercase"><i class="fa-solid fa-list"></i> Data Sparepart</h2>
+        {{-- <a  href="{{ route('restock.create') }}" class="bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 shadow">+ Restock</a> --}}
         <a href="{{ route('items.create') }}" class="bg-racing-orange text-white px-4 py-2 rounded font-bold hover:bg-orange-700 shadow">+ Tambah Barang</a>
     </div>
 
@@ -19,6 +20,7 @@
                     <th class="p-3 text-right">Harga Beli</th>
                     <th class="p-3 text-right">Harga Jual</th>
                     <th class="p-3 text-center">Stok</th>
+                    <th class="p-3 text-center">Foto</th>
                     <th class="p-3 text-center">Opsi</th>
                 </tr>
             </thead>
@@ -26,13 +28,18 @@
                 @foreach($items as $item)
                 <tr class="border-b hover:bg-gray-50">
                     <td class="p-3 font-bold">{{ $item->nama_item }}</td>
-                    <td class="p-3"><span class="bg-gray-200 text-xs px-2 py-1 rounded">{{ $item->kategori }}</span></td>
+                    <td class="p-3">
+                        <span class="bg-gray-200 text-xs px-2 py-1 rounded">{{ $item->kategori }}</span>
+                    </td>
                     <td class="p-3 text-right text-gray-500">Rp {{ number_format($item->harga_beli) }}</td>
                     <td class="p-3 text-right font-bold text-racing-orange">Rp {{ number_format($item->harga_jual) }}</td>
                     <td class="p-3 text-center">
                         <span class="{{ $item->stok < 5 ? 'text-red-600 font-bold' : 'text-green-600' }}">
                             {{ $item->stok }}
                         </span>
+                    </td>
+                    <td class="p-3 text-center ">
+                        <img src="{{ asset('storage/' . $item->foto) }}" class="h-20 w-20 object-cover border rounded">
                     </td>
                     <td class="p-3 text-center flex gap-2 justify-center">
                         <a href="{{ route('items.edit', $item->item_id) }}" class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Edit</a>

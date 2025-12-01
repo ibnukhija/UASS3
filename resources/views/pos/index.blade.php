@@ -4,6 +4,9 @@
 <div class="flex gap-4 h-screen pb-20">
     
     <div class="w-2/3 bg-white rounded-lg shadow-lg border-2 border-gray-300 p-4 overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 px-1 py-2 rounded">Kembali</a>
+        </div>
         
         <div class="mb-4 flex gap-2">
             <input type="text" id="searchItem" placeholder="Cari Sparepart..." class="w-full border-2 border-gray-300 p-2 rounded focus:border-racing-orange outline-none">
@@ -22,15 +25,15 @@
                 data-name="{{ strtolower($item->nama_item) }}"
                 data-category="{{ $item->kategori }}">
                 
-                @if($item->stok <= 5)
-                    <span class="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl-lg">Stok Kritis: {{ $item->stok }}</span>
-                @else
-                    <span class="absolute top-0 right-0 bg-green-600 text-white text-xs px-2 py-1 rounded-bl-lg">Stok: {{ $item->stok }}</span>
-                @endif
-
-                <div class="h-24 bg-gray-200 mb-2 flex items-center justify-center rounded">
-                    <i class="fa-solid fa-motorcycle text-3xl text-gray-400"></i>
+                <div class="h-24 mb-2 rounded overflow-hidden relative">
+                    <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama_item }}" class="w-full h-full object-cover">
                 </div>
+                @if($item->stok <= 5)
+                    <span class="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl-lg">Stok Menipis: {{ $item->stok }}</span>
+                    
+                    @else
+                        <span class="absolute top-0 right-0 bg-green-600 text-white text-xs px-2 py-1 rounded-bl-lg">Stok: {{ $item->stok }}</span>
+                    @endif
                 <h3 class="font-bold text-sm text-gray-800 line-clamp-2 h-10">{{ $item->nama_item }}</h3>
                 <p class="text-racing-orange font-bold mt-1">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</p>
             </div>

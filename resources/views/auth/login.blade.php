@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Speed Shop System</title>
+    <title>Login - Husna Oli System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .bg-racing-dark { background-color: #111; }
         .text-racing-orange { color: #ff5e00; }
         .bg-racing-orange { background-color: #ff5e00; }
-        /* Background Pattern ala Carbon Fiber sederhana */
         .bg-carbon {
             background-color: #1a1a1a;
             background-image: radial-gradient(#333 1px, transparent 1px);
@@ -19,7 +18,6 @@
     </style>
 </head>
 <body class="bg-carbon h-screen flex items-center justify-center font-sans text-gray-800">
-
     <div class="w-full max-w-md">
         
         <div class="text-center mb-8">
@@ -27,7 +25,7 @@
                 <i class="fa-solid fa-wrench text-5xl text-racing-orange"></i>
             </div>
             <h1 class="text-4xl font-black text-white italic tracking-widest uppercase">
-                Speed<span class="text-racing-orange">Shop</span>
+                Husna<span class="text-racing-orange">Oli</span>
             </h1>
             <p class="text-gray-400 text-sm mt-1 tracking-wide">Sparepart Management System</p>
         </div>

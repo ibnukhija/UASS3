@@ -17,7 +17,7 @@ class ItemController extends Controller
             $query->where('nama_item', 'like', '%'.$request->search.'%')
                 ->orWhere('kategori', 'like', '%'.$request->search.'%');
         }
-        $items = $query->paginate(10);
+        $items = $query->paginate(10); //Memanggil data barang maksimal 10
         
         return view('items.index', compact('items'));
     }

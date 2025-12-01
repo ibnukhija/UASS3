@@ -33,8 +33,8 @@ class TransaksiController extends Controller
 
             foreach($cart as $c) {
                 DetailTransaksi::create([
-                    'transaksi_id' => $trx->transaksi_id,
-                    'item_id' => $c['id'],
+                    'transaksi_id' => $trx->transaksi_id, 
+                    'item_id' => $c['id'], 
                     'jumlah' => $c['qty'],
                     'harga_jual_saat_itu' => $c['price']
                 ]);

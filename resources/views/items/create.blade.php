@@ -4,12 +4,11 @@
 <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg border-t-4 border-racing-orange">
     <div class="flex justify-between items-center mb-6 border-b pb-4">
         <h2 class="text-2xl font-bold uppercase text-gray-800"><i class="fa-solid fa-plus-circle"></i> Tambah Sparepart Baru</h2>
-        <a href="{{ route('items.index') }}" class="text-gray-500 hover:text-gray-700">Kembali</a>
+        <a href="{{ route('items.index') }}" class="text-gray-600 hover:text-gray-800">Kembali</a>
     </div>
 
     <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="col-span-2">
                 <label class="block font-bold mb-1">Nama Item</label>

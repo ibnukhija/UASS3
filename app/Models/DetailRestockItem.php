@@ -2,7 +2,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
-class DetailRestockItems extends Model
+class DetailRestockItem extends Model
 {
     protected $table = 'detail_restock_items';
     protected $primaryKey = 'detail_id';
