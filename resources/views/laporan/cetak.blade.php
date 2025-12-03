@@ -25,7 +25,7 @@
     <div class="bg-white max-w-4xl mx-auto mt-20 mb-10 p-10 shadow-xl border print:shadow-none print:border-none print:m-0 print:w-full">
         
         <div class="text-center border-b-4 border-double border-black pb-4 mb-6">
-            <h1 class="text-3xl font-black uppercase tracking-wider">SPEED SHOP KEDIRI</h1>
+            <h1 class="text-3xl font-black uppercase tracking-wider">HUSNA OLI KEDIRI</h1>
             <p class="text-sm text-gray-600">Jl. Raya Kediri No. 123, Jawa Timur | Telp: 0812-3456-7890</p>
             <p class="text-sm text-gray-600">Spesialis Sparepart Motor & Aksesoris Racing</p>
         </div>

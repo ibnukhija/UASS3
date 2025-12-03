@@ -19,8 +19,8 @@
             
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-wrench text-3xl text-racing-orange"></i>
-                <div>
-                    <h1 class="text-2xl font-bold italic tracking-wider">HUSNA OLI <span class="text-racing-orange">KEDIRI</span></h1>
+                <div>                    
+                    <a href="{{ route('dashboard')}}"><h1 class="text-2xl font-bold italic tracking-wider">HUSNA OLI <span class="text-racing-orange">KEDIRI</span></h1></a>
                 </div>
             </div>
             
@@ -31,7 +31,7 @@
             <div id="nav-menu" class="hidden md:flex flex-col md:flex-row absolute md:relative top-full right-0 mt-2 md:mt-0 bg-racing-dark md:bg-transparent p-4 md:p-0 rounded-md shadow-lg md:shadow-none z-10 border border-gray-700 md:border-none md:gap-6 items-start md:items-center">
                 
                 <div class="flex flex-col md:flex-row gap-4 text-sm font-bold uppercase tracking-wider mb-4 md:mb-0">
-                    <a href="{{ route('dashboard') }}" class="py-1 px-2 hover:text-racing-orange transition {{ request()->routeIs('dashboard') ? 'text-racing-orange' : 'text-gray-300' }}">Dashboard</a>
+                    <!-- <a href="{{ route('dashboard') }}" class="py-1 px-2 hover:text-racing-orange transition {{ request()->routeIs('dashboard') ? 'text-racing-orange' : 'text-gray-300' }}">Dashboard</a> -->
                     <a href="{{ route('items.index') }}" class="py-1 px-2 hover:text-racing-orange transition {{ request()->routeIs('items.*') ? 'text-racing-orange' : 'text-gray-300' }}">Barang</a>
                     <a href="{{ route('restock.index') }}" class="py-1 px-2 hover:text-racing-orange transition {{ request()->routeIs('restock.*') ? 'text-racing-orange' : 'text-gray-300' }}">Restock</a>
                     <a href="{{ route('laporan.index') }}" class="py-1 px-2 hover:text-racing-orange transition {{ request()->routeIs('laporan.*') ? 'text-racing-orange' : 'text-gray-300' }}">Laporan</a>

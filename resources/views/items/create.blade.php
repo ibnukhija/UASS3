@@ -52,9 +52,8 @@
             <p class="text-xs text-gray-500">Format: JPG, PNG. Maks 2MB.</p>
         </div>
 
-        <button type="submit" class="w-full bg-racing-orange hover:bg-orange-700 text-white font-bold py-3 rounded shadow-lg uppercase tracking-wider">
-            SIMPAN DATA
-        </button>
+        <button type="submit" class="w-full bg-racing-orange hover:bg-orange-700 text-white 
+        font-bold py-3 rounded shadow-lg uppercase tracking-wider">SIMPAN DATA</button>
     </form>
 </div>
 @endsection

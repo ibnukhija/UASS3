@@ -2,8 +2,10 @@
 
 @section('content')
 <div class="bg-white p-6 rounded shadow-lg border-t-4 border-blue-600">
-    <h2 class="text-2xl font-bold uppercase mb-6"><i class="fa-solid fa-file-invoice"></i> Laporan Bengkel</h2>
-
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold uppercase mb-6"><i class="fa-solid fa-file-invoice"></i> Laporan Bengkel</h2>
+        <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800">Kembali</a>
+    </div>    
     <form action="{{ route('laporan.index') }}" method="GET" class="bg-gray-100 p-4 rounded mb-6 flex flex-wrap gap-4 items-end">
         <div>
             <label class="block font-bold text-xs mb-1">Dari Tanggal</label>
@@ -23,9 +25,8 @@
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">
             <i class="fa-solid fa-filter"></i> Filter
         </button>
-        <button type="button" onclick="window.print()" class="bg-gray-600 text-white px-4 py-2 rounded font-bold hover:bg-gray-700">
-            <a href="{{ route('laporan.cetak', ['start_date' => $startDate, 'end_date' => $endDate, 'jenis' => $jenis]) }}" 
-                target="_blank" 
+        <button type="button" onclick="window.print()" class="bg-gray-600 text-white px-2 py-2 rounded font-bold hover:bg-gray-700">
+            <a href="{{ route('laporan.cetak', ['start_date' => $startDate, 'end_date' => $endDate, 'jenis' => $jenis]) }}" target="_blank" 
                 class="bg-gray-800 text-white px-4 py-2 rounded font-bold hover:bg-gray-900 flex items-center gap-2">
                 <i class="fa-solid fa-print"></i> Cetak PDF
             </a>
@@ -34,7 +35,7 @@
 
     <div class="overflow-x-auto">
         @if($jenis == 'keluar')
-            <h3 class="font-bold mb-2 text-racing-orange">Laporan Penjualan (Sparepart Keluar)</h3>
+            <h3 class="font-bold mb-2 text-green-700">Laporan Penjualan (Sparepart Keluar)</h3>
             <table class="w-full border-collapse border border-gray-300">
                 <thead class="bg-gray-200">
                     <tr>
@@ -66,7 +67,7 @@
                 </tbody>
                 <tfoot class="bg-gray-100 font-bold">
                     <tr>
-                        <td colspan="3" class="border p-2 text-right">TOTAL PENDAPATAN</td>
+                        <td colspan="3" class="border p-2 text-center">TOTAL PENDAPATAN</td>
                         <td class="border p-2 text-right text-green-700">Rp {{ number_format($grandTotal) }}</td>
                     </tr>
                 </tfoot>

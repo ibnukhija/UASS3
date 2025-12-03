@@ -41,13 +41,13 @@
     
     <hr class="border-gray-300 mb-8">
 
-    {{-- ------------------------------ MENU CARDS ------------------------------ --}}
+    
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {{-- Kelola Barang Card --}}
         <a href="{{ route('items.index') }}" class="group block">
             <div class="bg-white border-4 border-gray-800 hover:border-racing-orange p-6 rounded-xl shadow-xl transition transform hover:-translate-y-2 text-center h-56 flex flex-col justify-center items-center">
-                <i class="fa-solid fa-wrench text-4xl md:text-5xl text-gray-800 mb-4 group-hover:text-racing-orange transition"></i>
+                <i class="fa-solid fa-wrench text-4xl md:text-5xl text-gray-800 mb-4 group-hover:text-gray-500 transition"></i>
                 <h2 class="text-xl md:text-2xl font-black uppercase text-gray-900">Kelola Barang</h2>
             </div>
         </a>
@@ -69,7 +69,6 @@
         </a>
     </div>
 
-    {{-- ---------------------------- TRANSAKSI TERAKHIR ---------------------------- --}}
     <div class="mt-10 bg-white p-4 rounded shadow-lg">
         <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Transaksi Terakhir</h3>
         <div class="overflow-x-auto">
@@ -100,7 +99,7 @@
         </div>
     </div>
 
-    {{-- --------------------------------- GRAFIK --------------------------------- --}}
+    <!-- // Grafik Penjualan -->
     <div class="bg-white p-4 rounded-lg shadow-lg mt-10">
         <div class="flex flex-col md:flex-row justify-between gap-3 mb-4 items-center">
             <h3 class="font-bold text-gray-700 text-lg">Grafik Penjualan</h3>
@@ -115,7 +114,6 @@
         </div>
     </div>
 
-    {{-- ------------------------------ JAVASCRIPT & CHART.JS ------------------------------ --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById('grafikPenjualan');

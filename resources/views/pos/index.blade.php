@@ -2,8 +2,6 @@
 
 @section('content')
 <div class="flex flex-col lg:flex-row gap-4 min-h-screen pb-28 px-2">
-    
-    {{-- PRODUCT AREA --}}
     <div class="w-full lg:w-2/3 bg-white rounded-lg shadow-lg border-2 border-gray-300 p-4 overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
             <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 px-1 py-2 rounded">Kembali</a>
@@ -22,7 +20,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" id="productGrid">
             @foreach($items as $item)
             <div class="product-card cursor-pointer bg-gray-50 border hover:border-racing-orange rounded-lg p-3 shadow-sm relative"
-                onclick='addToCart({{ $item->item_id }}, @json($item->nama_item), {{ $item->harga_jual }}, {{ $item->stok }})'
+                onclick='addToCart({{ $item->item_id}}, @json($item->nama_item), {{ $item->harga_jual }}, {{ $item->stok}})'
                 data-name="{{ strtolower($item->nama_item) }}"
                 data-category="{{ $item->kategori }}">
                 
@@ -40,7 +38,7 @@
                     </span>
                 @endif
 
-                <h3 class="font-bold text-sm text-gray-800 line-clamp-2 min-h-[40px]">
+                <h3 class="font-bold text-sm text-gray-800 line-clamp-2 min-h-40px">
                     {{ $item->nama_item }}
                 </h3>
 
@@ -105,7 +103,48 @@
     </div>
 </div>
 
-{{-- SCRIPT CART --}}
+//script cari sparepart
+<script>
+    //Ambil elemen input dan dropdown
+    const searchInput = document.getElementById('searchItem');
+    const categorySelect = document.getElementById('filterCategory');
+    const cards = document.querySelectorAll('.product-card');
+
+    function filterProducts() {
+        const searchText = searchInput.value.toLowerCase();
+        const selectedCategory = categorySelect.value; //kategori yang dipilih
+
+        //Loop semua kartu produk satu per satu
+        cards.forEach(card => {
+            const productName = card.getAttribute('data-name');     // Ambil nama dari data-name
+            const productCategory = card.getAttribute('data-category'); // Ambil kategori dari data-category
+
+            // Cek apakah Nama cocok? (Fitur Search)
+            const isNameMatch = productName.includes(searchText);
+
+            // Cek apakah Kategori cocok? (Fitur Filter)
+            // Jika pilih 'all', anggap cocok semua. Jika tidak, harus sama persis.
+            const isCategoryMatch = selectedCategory === 'all' || productCategory === selectedCategory;
+
+            // 4. Tampilkan atau Sembunyikan
+            if (isNameMatch && isCategoryMatch) {
+                card.style.display = ""; // Tampilkan (reset display)
+            } else {
+                card.style.display = "none"; // Sembunyikan
+            }
+        });
+    }
+
+    // 5. Pasang "Penyadap" (Event Listener)
+    // Setiap kali mengetik di search bar, jalankan fungsi filter
+    searchInput.addEventListener('keyup', filterProducts);
+    searchInput.addEventListener('input', filterProducts); // Untuk handle tombol 'x' clear input
+
+    // Setiap kali ganti kategori, jalankan fungsi filter
+    categorySelect.addEventListener('change', filterProducts);
+</script>
+
+//script pembayaran
 <script>
 let cart = []
 let total = 0
@@ -207,4 +246,5 @@ function formatRupiah(angka) {
     return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }
 </script>
+
 @endsection
