@@ -3,12 +3,14 @@
 @section('content')
 <div class="bg-white p-6 rounded shadow-lg border-t-4 border-gray-800">
     <div class="flex justify-between items-center mb-6">
-        <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 px-1 py-2 rounded">Kembali</a>
+        <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-racing-orange px-1 py-2 rounded">Kembali</a>
     </div>
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold uppercase"><i class="fa-solid fa-list"></i> Data Sparepart</h2>
-        {{-- <a  href="{{ route('restock.create') }}" class="bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 shadow">+ Restock</a> --}}
-        <a href="{{ route('items.create') }}" class="bg-racing-orange text-white px-4 py-2 rounded font-bold hover:bg-orange-700 shadow">+ Tambah Barang</a>
+        <div class="flex gap-2">
+            <a  href="{{ route('restock.index') }}" class="bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 shadow">+ Tambah Stok</a>
+            <a href="{{ route('items.create') }}" class="bg-racing-orange text-white px-4 py-2 rounded font-bold hover:bg-orange-700 shadow">+ Tambah Barang</a>
+        </div>
     </div>
 
     <div class="overflow-x-auto">
@@ -29,7 +31,7 @@
                 <tr class="border-b hover:bg-gray-50">
                     <td class="p-3 font-bold">{{ $item->nama_item }}</td>
                     <td class="p-3">
-                        <span class="bg-gray-200 text-xs px-2 py-1 rounded">{{ $item->kategori }}</span>
+                        <span class="bg-gray-200 text-xs px-2 py-1 rounded">{{ $item->kategori->nama_kategori ?? 'Tanpa Kategori' }}</span>
                     </td>
                     <td class="p-3 text-right text-gray-500">Rp {{ number_format($item->harga_beli) }}</td>
                     <td class="p-3 text-right font-bold text-racing-orange">Rp {{ number_format($item->harga_jual) }}</td>

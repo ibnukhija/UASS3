@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Kategori;
 
 class ItemController extends Controller
 {
@@ -17,21 +18,21 @@ class ItemController extends Controller
             $query->where('nama_item', 'like', '%'.$request->search.'%')
                 ->orWhere('kategori', 'like', '%'.$request->search.'%');
         }
-        $items = $query->paginate(10); //Memanggil data barang maksimal 10
-        
+        $items = $query->paginate(10);
         return view('items.index', compact('items'));
     }
 
     //Menampilkan form tambah barang
     public function create() {
-        return view('items.create');
+        $kategori = Kategori::all();
+        return view('items.create', compact('kategori'));
     }
 
     //Menyimpan barang baru ke database
     public function store(Request $request) {
         $data = $request->validate([
             'nama_item' => 'required',
-            'kategori' => 'required',
+            'kategori_id' => 'required',
             'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric',
             'stok' => 'required|numeric',
@@ -51,7 +52,9 @@ class ItemController extends Controller
     //Menampilkan form edit barang
     public function edit($id) {
         $item = Item::findOrFail($id);
-        return view('items.edit', compact('item'));
+
+        $kategori = Kategori::all();
+        return view('items.edit', compact('item', 'kategori'));
     }
 
     //Menyimpan perubahan data barang
@@ -60,7 +63,7 @@ class ItemController extends Controller
         
         $data = $request->validate([
             'nama_item' => 'required',
-            'kategori' => 'required',
+            'kategori_id' => 'required',
             'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric',
             'stok' => 'required|numeric',

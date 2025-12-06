@@ -6,33 +6,36 @@ use Illuminate\Http\Request;
 use App\Models\Item;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon; // Fungsi carbon untuk memanipulasi tanggal
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
+    // Konstruktor untuk mengatur Locale di seluruh fungsi controller ini
+    public function __construct()
+    {
+        Carbon::setLocale('id');
+    }
+
     public function index()
     {
-        //mengubah locale ke Indonesia
-        Carbon::setLocale('id');
-
-        // Menghitung jumlah barang
+        // 
         $totalBarang = Item::count();
         $stokMenipis = Item::where('stok', '<=', 5)->count();
-        $pendapatanHariIni = Transaksi::whereDate('tanggal_transaksi', Carbon::today())
-                                ->sum('total_harga');
+        $pendapatanHariIni = Transaksi::whereDate('tanggal_transaksi', Carbon::today())->sum('total_harga');
 
-        // Mengambil 5 transaksi terbaru
+        //Transaksi Terakhir (Tabel)
         $transaksiTerbaru = Transaksi::with('user')
-                            ->orderBy('tanggal_transaksi', 'desc')
-                            ->limit(5)
-                            ->get();
+                                    ->orderBy('tanggal_transaksi', 'desc')
+                                    ->limit(5)
+                                    ->get();
         
-        // Mengubah format tanggal
+        // Format tanggal tabel indonesia
         $transaksiTerbaru->transform(function ($trx) {
             $trx->tanggal_formatted = Carbon::parse($trx->tanggal_transaksi)->translatedFormat('l, d F Y');
             return $trx;
         });
         
+        // Data Grafik
         $chartData = $this->getChartData('harian');
 
         return view('dashboard', compact(
@@ -44,12 +47,14 @@ class DashboardController extends Controller
         ));
     }
 
+    // Fungsi untuk AJAX Request dari Grafik
     public function grafikPenjualan($filter)
     {
         $data = $this->getChartData($filter);
         return response()->json($data);
     }
 
+    // Logic Utama Data Grafik
     private function getChartData($filter)
     {
         $labels = [];
@@ -60,7 +65,6 @@ class DashboardController extends Controller
             // Data 7 hari terakhir
             $startDate = Carbon::now()->subDays(6);
             
-            // Mengambil data dari DB dikelompokkan per tanggal
             $transaksi = Transaksi::select(
                 DB::raw('DATE(tanggal_transaksi) as date'),
                 DB::raw('SUM(total_harga) as total')
@@ -71,16 +75,13 @@ class DashboardController extends Controller
             ->get()
             ->pluck('total', 'date');
 
-            // Loop 7 hari untuk memastikan tanggal yang 0 rupiah tetap muncul
             for ($i = 0; $i <= 6; $i++) {
                 $date = $startDate->copy()->addDays($i);
+
+                // Translate ke indonesia
+                $labels[] = $date->translatedFormat('d M'); 
                 
-                $dateStr = $date->format('d M');
-                
-                //translate ke indonesia
-                $labels[] = $this->formatIndo($dateStr); 
-                
-                $dateKey = $date->format('Y-m-d');
+                $dateKey = $date->format('Y-m-d'); // Key database tetap format standar
                 $data[] = $transaksi[$dateKey] ?? 0;
             }
 
@@ -89,14 +90,16 @@ class DashboardController extends Controller
             for ($i = 3; $i >= 0; $i--) {
                 $startOfWeek = Carbon::now()->subWeeks($i)->startOfWeek();
                 $endOfWeek = Carbon::now()->subWeeks($i)->endOfWeek();
+                
                 $total = Transaksi::whereBetween('tanggal_transaksi', [$startOfWeek, $endOfWeek])->sum('total_harga');
 
+                // Label: Minggu ke-48
                 $labels[] = 'Minggu ke-' . $startOfWeek->weekOfYear;
                 $data[] = $total;
             }
 
         } elseif ($filter == 'bulanan') {
-            // Data 12 bulan terakhir (Jan - Des tahun ini)
+            // Data 12 bulan terakhir
             $transaksi = Transaksi::select(
                 DB::raw('MONTH(tanggal_transaksi) as month'),
                 DB::raw('YEAR(tanggal_transaksi) as year'),
@@ -107,12 +110,11 @@ class DashboardController extends Controller
             ->orderBy('month', 'ASC')
             ->get();
 
-            // Loop 12 Bulan
             for ($i = 1; $i <= 12; $i++) {
-                $monthNameEn = Carbon::create()->month($i)->format('F');
-                $labels[] = $this->formatIndo($monthNameEn);
+                // translatedFormat('F') agar otomatis jadi "Desember"
+                $monthName = Carbon::create()->month($i)->translatedFormat('F');
+                $labels[] = $monthName;
                 
-                // Cari data bulan ini
                 $found = $transaksi->where('month', $i)->first();
                 $data[] = $found ? $found->total : 0;
             }
@@ -122,14 +124,5 @@ class DashboardController extends Controller
             'labels' => $labels,
             'data' => $data
         ];
-    }
-
-    // Mengubah nama bulan ke indonesia
-    private function formatIndo($string) {
-        $bulanEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        
-        $bulanId = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
-
-        return str_replace($bulanEn, $bulanId, $string);
     }
 }

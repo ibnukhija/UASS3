@@ -4,7 +4,7 @@
 <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg border-t-4 border-racing-orange">
     <div class="flex justify-between items-center mb-6 border-b pb-4">
         <h2 class="text-2xl font-bold uppercase text-gray-800"><i class="fa-solid fa-plus-circle"></i> Tambah Sparepart Baru</h2>
-        <a href="{{ route('items.index') }}" class="text-gray-600 hover:text-gray-800">Kembali</a>
+        <a href="{{ route('items.index') }}" class="text-gray-600 hover:text-racing-orange px-1 py-2 rounded">Kembali</a>
     </div>
 
     <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data">
@@ -17,16 +17,11 @@
 
             <div>
                 <label class="block font-bold mb-1">Kategori</label>
-                <select name="kategori" class="w-full border-2 border-gray-300 p-2 rounded focus:border-racing-orange outline-none">
-                    <option value="Oli & Pelumas">Oli & Pelumas</option>
-                    <option value="Sistem Rem">Sistem Rem</option>
-                    <option value="Kelistrikan">Kelistrikan</option>
-                    <option value="Ban & Velg">Ban & Velg</option>
-                    <option value="Filter udara">Filter udara</option>
-                    <option value="Transmisi">Transmisi</option>
-                    <option value="Body & Aksesoris">Body & Aksesoris</option>
-                    <option value="Suspensi">Suspensi</option>
-                    <option value="Kabel & Selang">Kabel & Selang</option>
+                <select name="kategori_id" class="w-full border-2 border-gray-300 p-2 rounded">
+                    @foreach($kategori as $kat)
+                        <option value="{{ $kat->kategori_id }}">
+                            {{ $kat->nama_kategori }} </option>
+                    @endforeach
                 </select>
             </div>
 

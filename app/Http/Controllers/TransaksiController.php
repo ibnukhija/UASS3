@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Item;
+use App\Models\Kategori;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
 use Illuminate\Http\Request;
@@ -11,18 +12,16 @@ class TransaksiController extends Controller
 {
     public function index() {
         $items = Item::all();
-
-        $categories = [
-            'Oli & Pelumas', 'Sistem Rem', 'Kelistrikan', 'Ban & Velg', 
-            'Filter udara', 'Transmisi', 'Body & Aksesoris', 'Suspensi', 'Kabel & Selang'
-        ];
-        return view('pos.index', compact('items', 'categories'));
+        $kategori = Kategori::all();
+        return view('pos.index', compact('items', 'kategori'));
     }
 
     public function store(Request $request) {
         $cart = json_decode($request->cart, true);
         
-        DB::transaction(function() use ($request, $cart) {
+        $trx = null;
+
+        DB::transaction(function() use ($request, $cart, &$trx) {
             $trx = Transaksi::create([
                 'user_id' => Auth::id(),
                 'tanggal_transaksi' => now(),
@@ -39,10 +38,17 @@ class TransaksiController extends Controller
                     'harga_jual_saat_itu' => $c['price']
                 ]);
                 
+                //untuk mengurangi stok
                 Item::where('item_id', $c['id'])->decrement('stok', $c['qty']);
             }
         });
+        
+        if ($trx) {
+            $trx->load(['details.item', 'user']);
 
-        return redirect()->back()->with('success', 'Transaksi Berhasil!');
+            return redirect()->back()->with('success', 'Transaksi Berhasil!')->with('new_trx', $trx);
+        }
+
+        return redirect()->back()->with('error', 'Transaksi Gagal!');
     }
 }

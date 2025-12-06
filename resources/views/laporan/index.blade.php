@@ -4,7 +4,9 @@
 <div class="bg-white p-6 rounded shadow-lg border-t-4 border-blue-600">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold uppercase mb-6"><i class="fa-solid fa-file-invoice"></i> Laporan Bengkel</h2>
-        <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800">Kembali</a>
+        <div class="flex justify-between items-center mb-6">
+            <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800">Kembali</a>
+        </div>
     </div>    
     <form action="{{ route('laporan.index') }}" method="GET" class="bg-gray-100 p-4 rounded mb-6 flex flex-wrap gap-4 items-end">
         <div>
@@ -39,7 +41,7 @@
             <table class="w-full border-collapse border border-gray-300">
                 <thead class="bg-gray-200">
                     <tr>
-                        <th class="border p-2">Tgl Transaksi</th>
+                        <th class="border p-2">Tanggal Transaksi</th>
                         <th class="border p-2">Kasir</th>
                         <th class="border p-2">Item Terjual</th>
                         <th class="border p-2 text-right">Total Pendapatan</th>
@@ -62,7 +64,7 @@
                             <td class="border p-2 text-right font-bold">Rp {{ number_format($row->total_harga) }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="p-4 text-center text-gray-500">Tidak ada data penjualan pada periode ini.</td></tr>
+                        <tr><td colspan="4" class="p-4 text-center text-gray-500">Tidak ada data penjualan saat ini.</td></tr>
                     @endforelse
                 </tbody>
                 <tfoot class="bg-gray-100 font-bold">
@@ -93,24 +95,31 @@
                             $grandTotalModal += $rowTotal;
                         @endphp
                         <tr class="hover:bg-gray-50 border-b">
-                            <td class="border p-2 text-center">{{ $row->tanggal_masuk }}</td>
+                            <td class="border p-2 text-center">
+                                {{ $row->tanggal_masuk ? date('d/m/Y', strtotime($row->tanggal_masuk)) : '-' }}
+                            </td>
+                            
                             <td class="border p-2">{{ $row->nama_toko }}</td>
                             <td class="border p-2 text-sm">
                                 <ul class="list-disc pl-4">
                                     @foreach($row->details as $d)
-                                        <li>{{ $d->item->nama_item }} : {{ $d->jumlah }} pcs (@ Rp {{ number_format($d->harga_beli_saat_itu) }})</li>
+                                        <li>
+                                            {{ $d->item->nama_item ?? 'Barang Dihapus' }} : 
+                                            {{ $d->jumlah }} pcs 
+                                            (Rp {{ number_format($d->harga_beli_saat_itu, 0, ',', '.') }})
+                                        </li>
                                     @endforeach
                                 </ul>
                             </td>
-                            <td class="border p-2 text-right font-bold">Rp {{ number_format($rowTotal) }}</td>
+                            <td class="border p-2 text-right font-bold">Rp {{ number_format($rowTotal, 0, ',', '.') }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="p-4 text-center text-gray-500">Tidak ada barang masuk pada periode ini.</td></tr>
+                        <tr><td colspan="4" class="p-4 text-center text-gray-500">Tidak ada data barang masuk saat ini.</td></tr>
                     @endforelse
                 </tbody>
                 <tfoot class="bg-gray-100 font-bold">
                     <tr>
-                        <td colspan="3" class="border p-2 text-right">TOTAL PENGELUARAN MODAL</td>
+                        <td colspan="3" class="border p-2 text-center">TOTAL PENGELUARAN MODAL</td>
                         <td class="border p-2 text-right text-red-700">Rp {{ number_format($grandTotalModal) }}</td>
                     </tr>
                 </tfoot>

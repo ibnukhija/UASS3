@@ -4,7 +4,7 @@
 <div class="bg-white p-6 rounded shadow-lg border-t-4 border-green-600">
     <div class="flex justify-between items-center mb-6 border-b pb-4">
         <h2 class="text-2xl font-bold uppercase text-gray-800"><i class="fa-solid fa-truck-ramp-box"></i> Input Barang Masuk</h2>
-        <a href="{{ route('restock.index') }}" class="text-gray-500 hover:text-gray-700">Lihat History</a>
+        <a href="{{ route('restock.index') }}" class="text-gray-500 hover:text-racing-orange px-1 py-2 rounded">Lihat History</a>
     </div>
 
     <form action="{{ route('restock.store') }}" method="POST">

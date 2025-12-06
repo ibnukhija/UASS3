@@ -2,7 +2,9 @@
 
 @section('content')
 <div class="bg-white p-6 rounded shadow-lg border-t-4 border-gray-800">
-    <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800">Kembali</a>
+    <div class="flex justify-between items-center mb-6">
+        <a href="{{ route('items.index') }}" class="text-gray-600 hover:text-racing-orange px-1 py-2 rounded">Kembali</a>
+    </div>
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold uppercase"><i class="fa-solid fa-history"></i> Riwayat Restock</h2>
         <a href="{{ route('restock.create') }}" class="bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 shadow">+ Input Stok Baru</a>
@@ -15,7 +17,7 @@
                     <th class="p-3 text-left">Tanggal</th>
                     <th class="p-3 text-left">Supplier</th>
                     <th class="p-3 text-left">Detail Barang</th>
-                    <th class="p-3 text-left">Ket</th>
+                    <th class="p-3 text-left">Keterangan</th>
                     <th class="p-3 text-center">Opsi</th>
                 </tr>
             </thead>

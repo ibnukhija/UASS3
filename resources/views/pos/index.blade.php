@@ -1,18 +1,52 @@
 @extends('layout.app')
 
 @section('content')
+<!-- Untuk Struk -->
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #receiptModal, #receiptModal * {
+            visibility: visible;
+        }
+        #receiptModal {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: white !important; 
+            border: none;
+            box-shadow: none;
+        }
+
+        /* Atur area struk */
+        #receiptArea {
+            width: 58%; /* Atau set 58mm jika pakai printer thermal spesifik */
+            margin: 0 auto;
+            border: none; /* Hapus border kotak saat print */
+        }
+
+        #receiptModal button {
+            display: none !important;
+        }
+    }
+</style>
+
 <div class="flex flex-col lg:flex-row gap-4 min-h-screen pb-28 px-2">
     <div class="w-full lg:w-2/3 bg-white rounded-lg shadow-lg border-2 border-gray-300 p-4 overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
-            <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 px-1 py-2 rounded">Kembali</a>
+            <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-racing-orange px-1 py-2 rounded">Kembali</a>
         </div>
         
         <div class="mb-4 flex flex-col sm:flex-row gap-2">
             <input type="text" id="searchItem" placeholder="Cari Sparepart..." class="w-full border-2 border-gray-300 p-2 rounded focus:border-racing-orange outline-none">
-            <select id="filterCategory" class="border-2 border-gray-300 p-2 rounded w-full sm:w-auto">
-                <option value="all">Semua Kategori</option>
-                @foreach($categories as $cat)
-                    <option value="{{ $cat }}">{{ $cat }}</option>
+            <select id="filterKategori" class="border-2 border-gray-300 p-2 rounded w-full sm:w-auto">
+                <option value="all">Semua Kategori</option> 
+                @foreach($kategori as $kat)
+                    <option value="{{ $kat->nama_kategori }}">{{ $kat->nama_kategori}}</option>
                 @endforeach
             </select>
         </div>
@@ -22,7 +56,7 @@
             <div class="product-card cursor-pointer bg-gray-50 border hover:border-racing-orange rounded-lg p-3 shadow-sm relative"
                 onclick='addToCart({{ $item->item_id}}, @json($item->nama_item), {{ $item->harga_jual }}, {{ $item->stok}})'
                 data-name="{{ strtolower($item->nama_item) }}"
-                data-category="{{ $item->kategori }}">
+                data-kategori="{{ $item->kategori->nama_kategori ?? ''}}">
                 
                 <div class="h-24 mb-2 rounded overflow-hidden relative">
                     <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama_item }}" class="w-full h-full object-cover">
@@ -102,11 +136,89 @@
         </div>
     </div>
 </div>
+<!-- Untuk Struk -->
+</div> @if(session('new_trx'))
+@php $trx = session('new_trx'); @endphp
+<div id="receiptModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white p-4 rounded-lg shadow-lg w-96 relative">
+        
+        <button onclick="closeReceipt()" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
+            <i class="fa-solid fa-times text-xl"></i>
+        </button>
 
+        <div id="receiptArea" class="p-4 border border-gray-200 text-sm font-mono mb-4">
+            <div class="text-center mb-4 border-b border-dashed border-gray-400 pb-2">
+                <h2 class="font-bold text-xl uppercase">Husna Oli</h2>
+                <p class="text-xs">Jl. Raya Banyakan</p>
+                <!-- <p class="text-xs">Telp: </p> -->
+            </div>
+
+            <div class="mb-2">
+                <p>No: #{{ $trx->transaksi_id }}</p>
+                <p>Tgl: {{ date('d/m/Y H:i', strtotime($trx->tanggal_transaksi)) }}</p>
+                <p>Kasir: {{ $trx->user->nama ?? 'Admin' }}</p>
+            </div>
+
+            <div class="border-b border-dashed border-gray-400 mb-2"></div>
+
+            <div class="space-y-1 mb-2">
+                @foreach($trx->details as $detail)
+                <div class="flex justify-between">
+                    <span>{{ $detail->item->nama_item }} x {{ $detail->jumlah }}</span>
+                    <span>{{ number_format($detail->jumlah * $detail->harga_jual_saat_itu, 0, ',', '.') }}</span>
+                </div>
+                @endforeach
+            </div>
+
+            <div class="border-b border-dashed border-gray-500 mb-2"></div>
+
+            <div class="flex justify-between font-bold">
+                <span>TOTAL</span>
+                <span>Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Bayar</span>
+                <span>Rp {{ number_format($trx->pembayaran, 0, ',', '.') }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Kembali</span>
+                <span>Rp {{ number_format($trx->kembalian, 0, ',', '.') }}</span>
+            </div>
+
+            <div class="text-center mt-4 text-xs">
+                <p>Terima Kasih Telah Membeli di Husna Oli</p>
+                <p>Barang yang dibeli tidak dapat ditukar/dikembalikan</p>
+            </div>
+        </div>
+
+        <div class="flex gap-2">
+            <button onclick="printReceipt()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-bold">
+                <i class="fa-solid fa-print"></i> CETAK
+            </button>
+            <button onclick="closeReceipt()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 rounded font-bold">
+                TUTUP
+            </button>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- Script Struk -->
+<script>
+    function closeReceipt() {
+        document.getElementById('receiptModal').style.display = 'none';
+    }
+
+    function printReceipt() {
+        window.print();
+    }
+</script>
+
+<!-- Script pencarian -->
 <script>
     //Ambil elemen input dan dropdown
     const searchInput = document.getElementById('searchItem');
-    const categorySelect = document.getElementById('filterCategory');
+    const categorySelect = document.getElementById('filterKategori'); //Mencari nama/kategori yang sama
     const cards = document.querySelectorAll('.product-card');
 
     function filterProducts() {
@@ -115,13 +227,11 @@
 
         //Loop semua kartu produk satu per satu
         cards.forEach(card => {
-            const productName = card.getAttribute('data-name');     // Ambil nama dari data-name
-            const productCategory = card.getAttribute('data-category'); // Ambil kategori dari data-category
+            const productName = card.getAttribute('data-name');     // Mengambil nama dari data-name
+            const productCategory = card.getAttribute('data-kategori'); // Mengambil kategori dari data-kategori
 
             const isNameMatch = productName.includes(searchText);
 
-            // mengecek apakah kategori cocok? (Fitur Filter)
-            // Jika pilih 'all', anggap cocok semua. Jika tidak, harus sama persis.
             const isCategoryMatch = selectedCategory === 'all' || productCategory === selectedCategory;
 
             if (isNameMatch && isCategoryMatch) {
@@ -132,15 +242,15 @@
         });
     }
 
-    // Setiap kali mengetik di search bar, jalankan fungsi filter
+    // Menjalankan fungsi filter setiap melakuka pencarian
     searchInput.addEventListener('keyup', filterProducts);
     searchInput.addEventListener('input', filterProducts);
 
-    // Setiap kali ganti kategori, jalankan fungsi filter
+    // Menjalankan fungsi filter setiap memilih kategori
     categorySelect.addEventListener('change', filterProducts);
 </script>
 
-<!-- //script pembayaran -->
+<!-- Script pembayaran -->
 <script>
 let cart = []
 let total = 0

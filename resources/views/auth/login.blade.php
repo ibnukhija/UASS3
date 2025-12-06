@@ -6,10 +6,18 @@
     <title>Login - Husna Oli System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        racing: {
+                            orange: '#ff5e00', 
+                            dark: '#111',
+                        }}}}}
+    </script>
+
     <style>
-        .bg-racing-dark { background-color: #111; }
-        .text-racing-orange { color: #ff5e00; }
-        .bg-racing-orange { background-color: #ff5e00; }
         .bg-carbon {
             background-color: #1a1a1a;
             background-image: radial-gradient(#333 1px, transparent 1px);
@@ -66,6 +74,10 @@
                             </span>
                             <input class="w-full pl-10 pr-3 py-3 border-2 border-gray-200 rounded focus:outline-none focus:border-racing-orange transition-colors" 
                                 id="password" name="password" type="password" placeholder="Masukan Password..." required>
+                            
+                            <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-racing-orange focus:outline-none">
+                                <i id="eyeIcon" class="fa-solid fa-eye"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -78,10 +90,26 @@
             </div>
             
             <div class="bg-gray-100 p-4 text-center border-t border-gray-200">
-                <p class="text-xs text-gray-500">&copy; {{ date('Y') }} SpeedShop Kediri. All rights reserved.</p>
+                <p class="text-xs text-gray-500">&copy; {{ date('Y') }} Husna Oli Kediri.</p>
             </div>
         </div>
     </div>
 
+    <script>
+        function togglePassword() {
+            var passwordInput = document.getElementById("password");
+            var eyeIcon = document.getElementById("eyeIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text"; //Password terlihat
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password"; //Password tersembunyi
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
 </body>
 </html>
