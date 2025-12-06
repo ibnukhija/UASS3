@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     #Cetak PDF/Excel
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+    #Grafik
+    Route::get('/grafik-penjualan/{filter}', [DashboardController::class, 'grafikPenjualan']);
 });
 
-Route::get('/grafik-penjualan/{filter}', [DashboardController::class, 'grafikPenjualan']);

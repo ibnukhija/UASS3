@@ -103,7 +103,6 @@
     </div>
 </div>
 
-//script cari sparepart
 <script>
     //Ambil elemen input dan dropdown
     const searchInput = document.getElementById('searchItem');
@@ -119,14 +118,12 @@
             const productName = card.getAttribute('data-name');     // Ambil nama dari data-name
             const productCategory = card.getAttribute('data-category'); // Ambil kategori dari data-category
 
-            // Cek apakah Nama cocok? (Fitur Search)
             const isNameMatch = productName.includes(searchText);
 
-            // Cek apakah Kategori cocok? (Fitur Filter)
+            // mengecek apakah kategori cocok? (Fitur Filter)
             // Jika pilih 'all', anggap cocok semua. Jika tidak, harus sama persis.
             const isCategoryMatch = selectedCategory === 'all' || productCategory === selectedCategory;
 
-            // 4. Tampilkan atau Sembunyikan
             if (isNameMatch && isCategoryMatch) {
                 card.style.display = ""; // Tampilkan (reset display)
             } else {
@@ -135,16 +132,15 @@
         });
     }
 
-    // 5. Pasang "Penyadap" (Event Listener)
     // Setiap kali mengetik di search bar, jalankan fungsi filter
     searchInput.addEventListener('keyup', filterProducts);
-    searchInput.addEventListener('input', filterProducts); // Untuk handle tombol 'x' clear input
+    searchInput.addEventListener('input', filterProducts);
 
     // Setiap kali ganti kategori, jalankan fungsi filter
     categorySelect.addEventListener('change', filterProducts);
 </script>
 
-//script pembayaran
+<!-- //script pembayaran -->
 <script>
 let cart = []
 let total = 0
@@ -172,7 +168,7 @@ function addToCart(id, name, price, stock) {
 
 function renderCart() {
     const cartContainer = document.getElementById('cartItems')
-    const inputCart = document.getElementById('inputCart')
+    const inputCart = document.getElementById('inputCart') 
     const displayTotal = document.getElementById('displayTotal')
 
     cartContainer.innerHTML = ''
@@ -185,6 +181,7 @@ function renderCart() {
         return
     }
 
+    // Loop melalui setiap item di keranjang
     cart.forEach((item, index) => {
         let subtotal = item.qty * item.price
         total += subtotal
@@ -208,43 +205,53 @@ function renderCart() {
     inputCart.value = JSON.stringify(cart)
 
     document.getElementById('inputTotal').value = total
-    document.getElementById('btnBayar').disabled = false
+    calculateChange()
 }
 
+// Fungsi untuk mengubah jumlah barang
 function changeQty(index, value) {
     cart[index].qty += value
     if (cart[index].qty <= 0) cart.splice(index, 1)
     renderCart()
 }
 
+// Fungsi untuk menghapus barang
 function removeItem(index) {
     cart.splice(index, 1)
     renderCart()
 }
 
+// Fungsi untuk mengatur jumlah pembayaran
 function setAmount(amount){
     document.getElementById('inputBayar').value = amount
     calculateChange()
 }
 
+// Fungsi untuk menghitung kembalian
 function calculateChange(){
     const bayar = parseInt(document.getElementById('inputBayar').value) || 0
     const kembali = bayar - total
 
-    document.getElementById('displayChange').innerHTML = "Rp " + formatRupiah(kembali)
-
-    if (kembali >= 0 && total > 0){
-        document.getElementById('btnBayar').disabled = false
+    // Menampilkan kembalian
+    if(bayar > 0) {
+        document.getElementById('displayChange').innerHTML = "Rp " + formatRupiah(kembali)
     } else {
-        document.getElementById('btnBayar').disabled = true
+        document.getElementById('displayChange').innerHTML = "Rp 0"
     }
 
+    if (total > 0 && bayar >= total){
+        document.getElementById('btnBayar').disabled = false
+        document.getElementById('btnBayar').classList.remove('opacity-50', 'cursor-not-allowed')
+    } else {
+        document.getElementById('btnBayar').disabled = true
+        document.getElementById('btnBayar').classList.add('opacity-50', 'cursor-not-allowed')
+    }
     document.getElementById('inputKembalian').value = kembali
 }
 
+// Fungsi untuk format rupiah
 function formatRupiah(angka) {
     return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }
 </script>
-
 @endsection
