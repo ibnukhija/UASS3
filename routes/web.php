@@ -7,6 +7,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\RestockController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\UserController;
 
 #Login
 Route::middleware('guest')->group(function () {
@@ -14,9 +15,23 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.proses');
 });
 
+#tambah user
+
+
 Route::middleware('auth')->group(function () {
+    
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    #Tambah user
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    // Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    // Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    #Item
     Route::resource('items', ItemController::class);
     Route::resource('restock', RestockController::class);
 

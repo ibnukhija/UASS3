@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Item;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\DB;
@@ -24,10 +23,7 @@ class DashboardController extends Controller
         $pendapatanHariIni = Transaksi::whereDate('tanggal_transaksi', Carbon::today())->sum('total_harga');
 
         //Transaksi Terakhir (Tabel)
-        $transaksiTerbaru = Transaksi::with('user')
-                                    ->orderBy('tanggal_transaksi', 'desc')
-                                    ->limit(5)
-                                    ->get();
+        $transaksiTerbaru = Transaksi::with('user')->orderBy('tanggal_transaksi', 'desc')->limit(5)->get();
         
         // Format tanggal tabel indonesia
         $transaksiTerbaru->transform(function ($trx) {

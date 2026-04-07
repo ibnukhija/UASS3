@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-<div class="bg-white p-6 rounded shadow-lg border-t-4 border-blue-600">
+<div class="bg-white p-6 rounded shadow-lg border-t-4 border-gray-600">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold uppercase mb-6"><i class="fa-solid fa-file-invoice"></i> Laporan Bengkel</h2>
         <div class="flex justify-between items-center mb-6">
@@ -37,7 +37,7 @@
 
     <div class="overflow-x-auto">
         @if($jenis == 'keluar')
-            <h3 class="font-bold mb-2 text-green-700">Laporan Penjualan (Sparepart Keluar)</h3>
+            <h3 class="font-bold mb-2 text-gray-700">Laporan Penjualan (Sparepart Keluar)</h3>
             <table class="w-full border-collapse border border-gray-300">
                 <thead class="bg-gray-200">
                     <tr>
@@ -76,7 +76,7 @@
             </table>
 
         @else
-            <h3 class="font-bold mb-2 text-green-700">Laporan Restock (Barang Masuk)</h3>
+            <h3 class="font-bold mb-2 text-gray-700">Laporan Restock (Barang Masuk)</h3>
             <table class="w-full border-collapse border border-gray-300">
                 <thead class="bg-gray-200">
                     <tr>

@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layout.app_kasir')
 
 @section('content')
 <!-- Untuk Struk -->
@@ -37,9 +37,9 @@
 
 <div class="flex flex-col lg:flex-row gap-4 min-h-screen pb-28 px-2">
     <div class="w-full lg:w-2/3 bg-white rounded-lg shadow-lg border-2 border-gray-300 p-4 overflow-y-auto">
-        <div class="flex justify-between items-center mb-6">
+        <!-- <div class="flex justify-between items-center mb-6">
             <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-racing-orange px-1 py-2 rounded">Kembali</a>
-        </div>
+        </div> -->
         
         <div class="mb-4 flex flex-col sm:flex-row gap-2">
             <input type="text" id="searchItem" placeholder="Cari Sparepart..." class="w-full border-2 border-gray-300 p-2 rounded focus:border-racing-orange outline-none">

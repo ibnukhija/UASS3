@@ -32,6 +32,7 @@ class RestockController extends Controller
             'items.*.harga_beli' => 'required|numeric',
         ]);
 
+        // Untuk melakukan transaksi
         DB::transaction(function() use ($request) {
             //Simpan Header Restock
             $restock = RestockItem::create([

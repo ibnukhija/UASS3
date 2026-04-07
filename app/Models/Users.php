@@ -15,7 +15,8 @@ class Users extends Authenticatable
     protected $fillable = [
         'nama', 
         'username', 
-        'password'
+        'password',
+        'role'
     ];
 
     public $timestamps = true;

@@ -27,7 +27,6 @@
 </head>
 <body class="bg-carbon h-screen flex items-center justify-center font-sans text-gray-800">
     <div class="w-full max-w-md">
-        
         <div class="text-center mb-8">
             <div class="inline-block p-4 rounded-full border-4 border-racing-orange bg-gray-900 mb-4 shadow-lg shadow-orange-500/20">
                 <i class="fa-solid fa-wrench text-5xl text-racing-orange"></i>
@@ -38,10 +37,9 @@
             <p class="text-gray-400 text-sm mt-1 tracking-wide">Sparepart Management System</p>
         </div>
 
-        <div class="bg-white rounded-lg shadow-2xl overflow-hidden border-t-4 border-racing-orange">
+        <div class="bg-white rounded-lg shadow-2xl overflow-hidden border-t-6">
             <div class="p-8">
-                <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">OWNER ACCESS</h2>
-
+                <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">LOGIN</h2>
                 @if(session('error'))
                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-6 text-sm flex items-center gap-2" role="alert">
                     <i class="fa-solid fa-triangle-exclamation"></i>

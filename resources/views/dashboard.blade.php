@@ -40,7 +40,14 @@
     <hr class="border-gray-300 mb-8">
 
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- {{-- Kasir Card --}} -->
+        <a href="{{ route('users.index') }}" class="group block">
+            <div class="bg-white border-4 border-gray-800 hover:border-gray-500 p-6 rounded-xl shadow-xl transition transform hover:-translate-y-2 text-center h-56 flex flex-col justify-center items-center">
+                <i class="fa-solid fa-users text-4xl md:text-5xl text-gray-800 mb-4 group-hover:text-gray-500 transition"></i>
+                <h2 class="text-xl md:text-2xl font-black uppercase text-gray-900">Kelola User</h2>
+            </div>
+        </a>
         <!-- {{-- Kelola Barang Card --}} -->
         <a href="{{ route('items.index') }}" class="group block">
             <div class="bg-white border-4 border-gray-800 hover:border-gray-500 p-6 rounded-xl shadow-xl transition transform hover:-translate-y-2 text-center h-56 flex flex-col justify-center items-center">
@@ -51,19 +58,12 @@
 
         <!-- {{-- Laporan Card --}} -->
         <a href="{{ route('laporan.index') }}" class="group block">
-            <div class="bg-white border-4 border-blue-800 hover:border-blue-500 p-6 rounded-xl shadow-xl transition transform hover:-translate-y-2 text-center h-56 flex flex-col justify-center items-center">
-                <i class="fa-solid fa-file-invoice-dollar text-4xl md:text-5xl text-blue-800 mb-4 group-hover:text-blue-500 transition"></i>
-                <h2 class="text-xl md:text-2xl font-black uppercase text-blue-900">Laporan</h2>
+            <div class="bg-white border-4 border-gray-800 hover:border-gray-500 p-6 rounded-xl shadow-xl transition transform hover:-translate-y-2 text-center h-56 flex flex-col justify-center items-center">
+                <i class="fa-solid fa-file-invoice-dollar text-4xl md:text-5xl text-gray-800 mb-4 group-hover:text-gray-500 transition"></i>
+                <h2 class="text-xl md:text-2xl font-black uppercase text-gray-900">Laporan</h2>
             </div>
         </a>
 
-        <!-- {{-- Kasir Card --}} -->
-        <a href="{{ route('kasir') }}" class="group block">
-            <div class="bg-white border-4 border-red-800 hover:border-red-500 p-6 rounded-xl shadow-xl transition transform hover:-translate-y-2 text-center h-56 flex flex-col justify-center items-center">
-                <i class="fa-solid fa-cash-register text-4xl md:text-5xl text-red-800 mb-4 group-hover:text-red-500 transition"></i>
-                <h2 class="text-xl md:text-2xl font-black uppercase text-red-900">KASIR</h2>
-            </div>
-        </a>
     </div>
 
     <div class="mt-10 bg-white p-4 rounded shadow-lg">

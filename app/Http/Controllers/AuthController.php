@@ -27,7 +27,13 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $request->session()->save(); 
 
-            return redirect()->route('dashboard');
+            if ($user->role == 'admin') {
+                return redirect()->route('dashboard');
+            }
+
+            elseif($user->role == 'kasir') {
+                return redirect()->route('kasir');
+            }
         }
         return back()->with('error', 'Username atau Password salah!');
     }

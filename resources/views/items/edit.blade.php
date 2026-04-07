@@ -19,9 +19,12 @@
 
             <div>
                 <label class="block font-bold mb-1">Kategori</label>
-                <select name="kategori" class="w-full border-2 border-gray-300 p-2 rounded focus:border-racing-orange outline-none">
-                    @foreach(['Oli & Pelumas', 'Sistem Rem', 'Kelistrikan', 'Ban & Velg', 'Filter udara', 'Transmisi', 'Body & Aksesoris', 'Suspensi', 'Kabel & Selang'] as $cat)
-                        <option value="{{ $cat }}" {{ $item->kategori == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                <select name="kategori_id" class="w-full border-2 border-gray-300 p-2 rounded focus:border-racing-orange outline-none">
+                    @foreach($kategori as $kat)
+                        <option value="{{ $kat->kategori_id }}" 
+                            {{ $item->kategori_id == $kat->kategori_id ? 'selected' : '' }}>
+                            {{ $kat->nama_kategori }}
+                        </option>
                     @endforeach
                 </select>
             </div>
