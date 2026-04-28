@@ -34,7 +34,7 @@
             <h1 class="text-4xl font-black text-white italic tracking-widest uppercase">
                 Husna<span class="text-racing-orange">Oli</span>
             </h1>
-            <p class="text-gray-400 text-sm mt-1 tracking-wide">Sparepart Management System</p>
+            <p class="text-gray-400 text-sm mt-1 tracking-wide">Toko Sparepart Motor & Aksesoris</p>
         </div>
 
         <div class="bg-white rounded-lg shadow-2xl overflow-hidden border-t-6">
