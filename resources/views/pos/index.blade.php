@@ -90,6 +90,17 @@
             <h2 class="font-bold text-xl mb-4 border-b pb-2">
                 <i class="fa-solid fa-cart-shopping"></i> Keranjang
             </h2>
+
+            <div class="bg-gray-100 p-3 rounded-lg mb-3 border border-gray-200">
+                <h3 class="font-bold text-sm text-gray-700 mb-2"><i class="fa-solid fa-wrench"></i> Tambah Jasa Service</h3>
+                <input type="text" id="inputNamaService" placeholder="Nama Service (Cth: Ganti Oli)" class="w-full text-sm border-2 border-gray-300 p-2 rounded mb-2 focus:border-racing-orange outline-none">
+                <div class="flex gap-2">
+                    <input type="number" id="inputHargaService" placeholder="Harga Jasa (Rp)" class="w-full text-sm border-2 border-gray-300 p-2 rounded focus:border-racing-orange outline-none">
+                    <button type="button" onclick="addServiceToCart()" class="bg-blue-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-blue-700 shadow transition">
+                        Tambah
+                    </button>
+                </div>
+            </div>
             
             <div id="cartItems" class="flex-1 overflow-y-auto space-y-2 mb-4">
                 <p class="text-center text-gray-400 mt-10">Keranjang Kosong</p>
@@ -110,15 +121,15 @@
                     <div class="mb-2">
                         <label class="block text-sm font-bold mb-1">Bayar (Rp)</label>
                         <input type="number" name="pembayaran" id="inputBayar"
-                            class="w-full border-2 border-gray-300 p-2 rounded text-right font-bold text-lg"
+                            class="w-full border-2 border-gray-300 p-2 rounded text-right font-bold text-lg focus:border-racing-orange outline-none"
                             oninput="calculateChange()">
                     </div>
 
-                    <div class="grid grid-cols-4 gap-1 mb-4 text-xs">
-                        <button type="button" onclick="setAmount(100000)" class="bg-gray-200 py-1 rounded hover:bg-gray-300">100k</button>
-                        <button type="button" onclick="setAmount(200000)" class="bg-gray-200 py-1 rounded hover:bg-gray-300">200k</button>
-                        <button type="button" onclick="setAmount(500000)" class="bg-gray-200 py-1 rounded hover:bg-gray-300">500k</button>
-                        <button type="button" onclick="setAmount(1000000)" class="bg-gray-200 py-1 rounded hover:bg-gray-300">1jt</button>
+                    <div class="grid grid-cols-4 gap-1 mb-4 text-xs font-bold text-gray-700">
+                        <button type="button" onclick="setAmount(100000)" class="bg-gray-200 py-2 rounded hover:bg-gray-300 transition">100k</button>
+                        <button type="button" onclick="setAmount(200000)" class="bg-gray-200 py-2 rounded hover:bg-gray-300 transition">200k</button>
+                        <button type="button" onclick="setAmount(500000)" class="bg-gray-200 py-2 rounded hover:bg-gray-300 transition">500k</button>
+                        <button type="button" onclick="setAmount(1000000)" class="bg-gray-200 py-2 rounded hover:bg-gray-300 transition">1jt</button>
                     </div>
 
                     <div class="flex justify-between text-lg font-bold mb-4 text-green-700">
@@ -127,7 +138,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full bg-racing-orange hover:bg-orange-700 text-white font-bold py-3 rounded shadow-lg"
+                        class="w-full bg-racing-orange hover:bg-orange-700 text-white font-bold py-3 rounded shadow-lg transition"
                         id="btnBayar" disabled>
                         PROSES TRANSAKSI
                     </button>
@@ -136,6 +147,7 @@
         </div>
     </div>
 </div>
+
 <!-- Untuk Struk -->
 </div> @if(session('new_trx'))
 @php $trx = session('new_trx'); @endphp
@@ -164,7 +176,14 @@
             <div class="space-y-1 mb-2">
                 @foreach($trx->details as $detail)
                 <div class="flex justify-between">
-                    <span>{{ $detail->item->nama_item }} x {{ $detail->jumlah }}</span>
+                    <span>
+                        @if($detail->tipe == 'barang')
+                            {{ $detail->item->nama_item }}
+                        @else
+                            {{ $detail->nama_service }}
+                        @endif 
+                        x {{ $detail->jumlah }}
+                    </span>
                     <span>{{ number_format($detail->jumlah * $detail->harga_jual_saat_itu, 0, ',', '.') }}</span>
                 </div>
                 @endforeach
@@ -255,13 +274,15 @@
 let cart = []
 let total = 0
 
+// 1. Fungsi Tambah Barang (Oli/Sparepart)
 function addToCart(id, name, price, stock) {
     if (stock <= 0) {
         alert("Stok habis!")
         return
     }
 
-    const existing = cart.find(item => item.id === id)
+    // Cari apakah barang sudah ada di keranjang
+    const existing = cart.find(item => item.id === id && item.tipe === 'barang')
 
     if (existing) {
         if (existing.qty >= stock) {
@@ -270,12 +291,40 @@ function addToCart(id, name, price, stock) {
         }
         existing.qty++
     } else {
-        cart.push({ id, name, price, qty: 1 })
+        cart.push({ id: id, tipe: 'barang', name: name, price: price, qty: 1 })
     }
-
     renderCart()
 }
 
+// 2. Fungsi Tambah Jasa Service (BARU)
+function addServiceToCart() {
+    const nameInput = document.getElementById('inputNamaService');
+    const priceInput = document.getElementById('inputHargaService');
+    const name = nameInput.value;
+    const price = parseInt(priceInput.value);
+
+    if(!name || !price || price <= 0) {
+        alert("Mohon masukkan nama dan harga service dengan benar!");
+        return;
+    }
+
+    // Masukkan ke array cart dengan tipe 'service'
+    cart.push({
+        id: 'srv_' + Date.now(), // ID acak untuk membedakan di UI
+        tipe: 'service', 
+        name: name, 
+        price: price, 
+        qty: 1 
+    });
+
+    // Kosongkan form input
+    nameInput.value = '';
+    priceInput.value = '';
+    
+    renderCart();
+}
+
+// 3. Render Keranjang & Siapkan Data untuk Controller
 function renderCart() {
     const cartContainer = document.getElementById('cartItems')
     const inputCart = document.getElementById('inputCart') 
@@ -291,58 +340,79 @@ function renderCart() {
         return
     }
 
-    // Loop melalui setiap item di keranjang
+    let backendCart = []; // Array khusus untuk dikirim ke Laravel
+
     cart.forEach((item, index) => {
         let subtotal = item.qty * item.price
         total += subtotal
 
+        // Tampilan icon pembeda Barang vs Service
+        let icon = item.tipe === 'barang' ? '<i class="fa-solid fa-box text-gray-500"></i>' : '<i class="fa-solid fa-wrench text-blue-500"></i>';
+
         cartContainer.innerHTML += `
-            <div class="flex justify-between items-center border-b pb-1 text-sm">
+            <div class="flex justify-between items-center border-b pb-2 pt-1 text-sm">
                 <div>
-                    <p class="font-bold">${item.name}</p>
-                    <p>${item.qty} x Rp ${formatRupiah(item.price)}</p>
+                    <p class="font-bold">${icon} ${item.name}</p>
+                    <p class="text-gray-600 pl-4">${item.qty} x Rp ${formatRupiah(item.price)}</p>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button onclick="changeQty(${index},-1)" class="bg-gray-300 px-2 rounded">-</button>
-                    <button onclick="changeQty(${index},1)" class="bg-gray-300 px-2 rounded">+</button>
-                    <button onclick="removeItem(${index})" class="bg-red-500 text-white px-2 rounded">x</button>
+                    <button type="button" onclick="changeQty(${index},-1)" class="bg-gray-300 px-2 rounded hover:bg-gray-400">-</button>
+                    <button type="button" onclick="changeQty(${index},1)" class="bg-gray-300 px-2 rounded hover:bg-gray-400" ${item.tipe === 'service' ? 'disabled' : ''}>+</button>
+                    <button type="button" onclick="removeItem(${index})" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
         `
+
+        // Susun format data untuk dikirim ke Controller Laravel
+        if (item.tipe === 'barang') {
+            backendCart.push({
+                tipe: 'barang',
+                item_id: item.id,
+                jumlah: item.qty,
+                harga_jual: item.price
+            });
+        } else {
+            backendCart.push({
+                tipe: 'service',
+                nama_service: item.name,
+                jumlah: 1, // Jasa service selalu 1 per input
+                harga_service: item.price
+            });
+        }
     })
 
     displayTotal.innerHTML = "Rp " + formatRupiah(total)
-    inputCart.value = JSON.stringify(cart)
-
+    
+    // Ubah data backendCart menjadi JSON dan simpan di input hidden
+    inputCart.value = JSON.stringify(backendCart)
     document.getElementById('inputTotal').value = total
+    
     calculateChange()
 }
 
-// Fungsi untuk mengubah jumlah barang
 function changeQty(index, value) {
+    if (cart[index].tipe === 'service' && value > 0) {
+        return; // Service tidak bisa ditambah Qty-nya secara berulang
+    }
     cart[index].qty += value
     if (cart[index].qty <= 0) cart.splice(index, 1)
     renderCart()
 }
 
-// Fungsi untuk menghapus barang
 function removeItem(index) {
     cart.splice(index, 1)
     renderCart()
 }
 
-// Fungsi untuk mengatur jumlah pembayaran
 function setAmount(amount){
     document.getElementById('inputBayar').value = amount
     calculateChange()
 }
 
-// Fungsi untuk menghitung kembalian
 function calculateChange(){
     const bayar = parseInt(document.getElementById('inputBayar').value) || 0
     const kembali = bayar - total
 
-    // Menampilkan kembalian
     if(bayar > 0) {
         document.getElementById('displayChange').innerHTML = "Rp " + formatRupiah(kembali)
     } else {
@@ -359,7 +429,6 @@ function calculateChange(){
     document.getElementById('inputKembalian').value = kembali
 }
 
-// Fungsi untuk format rupiah
 function formatRupiah(angka) {
     return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }

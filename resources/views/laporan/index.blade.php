@@ -57,7 +57,14 @@
                             <td class="border p-2 text-sm">
                                 <ul class="list-disc pl-4">
                                     @foreach($row->details as $d)
-                                        <li>{{ $d->item->nama_item }} ({{ $d->jumlah }} pcs)</li>
+                                        <li>
+                                            @if($d->tipe == 'barang')
+                                                {{ $d->item->nama_item }}
+                                            @else
+                                                {{ $d->nama_service }} (Jasa Service)
+                                            @endif 
+                                            - {{ $d->jumlah }} pcs
+                                        </li>
                                     @endforeach
                                 </ul>
                             </td>
