@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Kategori;
+use App\Models\RestockItem;
+use App\Models\DetailRestockItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Kategori;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
-    //Menampilkan daftar barang
+    // Menampilkan daftar barang
     public function index(Request $request) {
         $query = Item::query();
         
-        // Fitur Pencarian
         if($request->search) {
             $query->where('nama_item', 'like', '%'.$request->search.'%')
                 ->orWhere('kategori', 'like', '%'.$request->search.'%');
@@ -22,13 +24,13 @@ class ItemController extends Controller
         return view('items.index', compact('items'));
     }
 
-    //Menampilkan form tambah barang
+    // Menampilkan form tambah barang
     public function create() {
         $kategori = Kategori::all();
         return view('items.create', compact('kategori'));
     }
 
-    //Menyimpan barang baru ke database
+    // Menyimpan barang baru dan inisialisasi batch awal
     public function store(Request $request) {
         $data = $request->validate([
             'nama_item' => 'required',
@@ -45,19 +47,38 @@ class ItemController extends Controller
             $data['foto'] = 'default.png';
         }
 
-        Item::create($data);
+        DB::transaction(function() use ($data) {
+            $item = Item::create($data);
+
+            // Buat data batch awal otomatis jika stok langsung diisi
+            if ($item->stok > 0) {
+                $initialRestock = RestockItem::create([
+                    'tanggal_masuk' => now(),
+                    'nama_toko' => 'Saldo Stok Bawaan',
+                    'keterangan' => 'Otomatis dari input produk baru'
+                ]);
+
+                DetailRestockItems::create([
+                    'restock_id' => $initialRestock->restock_id,
+                    'item_id' => $item->item_id,
+                    'jumlah' => $item->stok,
+                    'stok_tersisa' => $item->stok,
+                    'harga_beli_saat_itu' => $item->harga_beli
+                ]);
+            }
+        });
+
         return redirect()->route('items.index')->with('success', 'Barang berhasil ditambahkan');
     }
 
-    //Menampilkan form edit barang
+    // Menampilkan form edit barang
     public function edit($id) {
         $item = Item::findOrFail($id);
-
         $kategori = Kategori::all();
         return view('items.edit', compact('item', 'kategori'));
     }
 
-    //Menyimpan perubahan data barang
+    // Menyimpan perubahan data barang dan sinkronisasi harga batch terlama
     public function update(Request $request, $id) {
         $item = Item::findOrFail($id);
         
@@ -70,7 +91,6 @@ class ItemController extends Controller
             'foto' => 'nullable|image|max:2048'
         ]);
 
-        // Cek jika ada upload foto baru
         if($request->hasFile('foto')) {
             if($item->foto && $item->foto != 'default.png') {
                 Storage::disk('public')->delete($item->foto);
@@ -78,11 +98,24 @@ class ItemController extends Controller
             $data['foto'] = $request->file('foto')->store('items', 'public');
         }
 
-        $item->update($data);
+        DB::transaction(function() use ($item, $data, $request) {
+            $item->update($data);
+
+            // Update harga beli pada batch aktif terlama
+            $oldestBatch = DetailRestockItems::where('item_id', $item->item_id)
+                ->where('stok_tersisa', '>', 0)
+                ->orderBy('created_at', 'asc')
+                ->first();
+
+            if ($oldestBatch) {
+                $oldestBatch->update(['harga_beli_saat_itu' => $request->harga_beli]);
+            }
+        });
+
         return redirect()->route('items.index')->with('success', 'Data barang berhasil diperbarui');
     }
 
-    //Menghapus barang
+    // Menghapus barang
     public function destroy($id) {
         $item = Item::findOrFail($id);
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Item;
@@ -21,7 +22,7 @@ class RestockController extends Controller
         return view('restock.create', compact('items'));
     }
 
-    // Proses Simpan Restock
+    // Menyimpan data restock baru
     public function store(Request $request) {
         $request->validate([
             'nama_toko' => 'required',
@@ -32,44 +33,56 @@ class RestockController extends Controller
             'items.*.harga_beli' => 'required|numeric',
         ]);
 
-        // Untuk melakukan transaksi
         DB::transaction(function() use ($request) {
-            //Simpan Header Restock
+            // Simpan data utama restock
             $restock = RestockItem::create([
                 'tanggal_masuk' => $request->tanggal_masuk,
                 'nama_toko' => $request->nama_toko,
                 'keterangan' => $request->keterangan ?? '-'
             ]);
 
-            //Simpan Detail & Update Stok Barang
+            // Simpan detail item dan update stok
             foreach($request->items as $itemData) {
                 DetailRestockItems::create([
                     'restock_id' => $restock->restock_id,
                     'item_id' => $itemData['item_id'],
                     'jumlah' => $itemData['jumlah'],
+                    'stok_tersisa' => $itemData['jumlah'], 
                     'harga_beli_saat_itu' => $itemData['harga_beli']
                 ]);
 
+                // Update total stok barang
                 Item::where('item_id', $itemData['item_id'])
                     ->increment('stok', $itemData['jumlah']);
                 
-                Item::where('item_id', $itemData['item_id'])
-                    ->update(['harga_beli' => $itemData['harga_beli']]);
+                // Atur acuan harga beli dari batch terlama yang masih ada stok
+                $oldestBatch = DetailRestockItems::where('item_id', $itemData['item_id'])
+                    ->where('stok_tersisa', '>', 0)
+                    ->orderBy('created_at', 'asc')
+                    ->first();
+
+                if ($oldestBatch) {
+                    Item::where('item_id', $itemData['item_id'])
+                        ->update(['harga_beli' => $oldestBatch->harga_beli_saat_itu]);
+                }
             }
         });
 
         return redirect()->route('items.index')->with('success', 'Stok berhasil ditambahkan!');
     }
     
+    // Menghapus data restock
     public function destroy($id) {
         $restock = RestockItem::with('details')->findOrFail($id);
         
-        foreach($restock->details as $detail) {
-            Item::where('item_id', $detail->item_id)
-                ->decrement('stok', $detail->jumlah);
-        }
+        DB::transaction(function() use ($restock) {
+            foreach($restock->details as $detail) {
+                Item::where('item_id', $detail->item_id)
+                    ->decrement('stok', $detail->jumlah);
+            }
+            $restock->delete(); 
+        });
 
-        $restock->delete(); 
         return back()->with('success', 'Data restock dihapus dan stok dikembalikan.');
     }
 }
